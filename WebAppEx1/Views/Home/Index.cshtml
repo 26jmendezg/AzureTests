@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>
+    <h1>Agregar Items</h1>
+    <form asp-controller="Home" asp-action="AddValue" method="post">
+        <label>Nuevo Valor</label>
+        <input type="text" name="valor" />
+        <input type="submit" title="Registrar" />
+    </form>
+</div>
+<hr />
+<div class="text-left">
+    <h1>Items Agregados</h1>
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>@item</li>
+        }
+    </ul>
+</div>

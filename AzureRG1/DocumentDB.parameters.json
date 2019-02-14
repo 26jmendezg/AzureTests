@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "databaseAccountName": {
+      "value": "documentos1"
+    },
+    "Exercise1PlanName": {
+      "value": "Exercise1"
+    },
+    "WebapiEx1DeployPackageFolder": {
+      "value": "WebApiEx1"
+    },
+    "WebapiEx1DeployPackageFileName": {
+      "value": "package.zip"
+    },
+    "WebAppEx1DeployPackageFolder": {
+      "value": "WebAppEx1"
+    },
+    "WebAppEx1DeployPackageFileName": {
+      "value": "package.zip"
+    }
+  }
+}

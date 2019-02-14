@@ -1,0 +1,230 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "databaseAccountName": {
+      "type": "string",
+      "minLength": 3,
+      "metadata": {
+        "description": "The DocumentDB database account name."
+      }
+    },
+    "consistencyLevel": {
+      "type": "string",
+      "allowedValues": [
+        "Eventual",
+        "Strong",
+        "Session",
+        "BoundedStaleness"
+      ],
+      "defaultValue": "Session",
+      "metadata": {
+        "description": "The DocumentDB default consistency level for this account."
+      }
+    },
+    "maxStalenessPrefix": {
+      "type": "int",
+      "minValue": 10,
+      "maxValue": 1000,
+      "defaultValue": 10,
+      "metadata": {
+        "description": "When consistencyLevel is set to BoundedStaleness, then this value is required, otherwise it can be ignored."
+      }
+    },
+    "maxIntervalInSeconds": {
+      "type": "int",
+      "minValue": 5,
+      "maxValue": 600,
+      "defaultValue": 5,
+      "metadata": {
+        "description": "When consistencyLevel is set to BoundedStaleness, then this value is required, otherwise it can be ignored."
+      }
+    },
+    "Exercise1PlanName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Exercise1PlanSkuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring"
+    },
+    "WebapiEx1DeployPackageFolder": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "WebDeploy package location. This path is relative to the _artifactsLocation parameter"
+      }
+    },
+    "WebapiEx1DeployPackageFileName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the webdeploy package"
+      }
+    },
+    "WebAppEx1DeployPackageFolder": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "WebDeploy package location. This path is relative to the _artifactsLocation parameter"
+      }
+    },
+    "WebAppEx1DeployPackageFileName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the webdeploy package"
+      }
+    }
+  },
+  "variables": {
+    "offerType": "Standard",
+    "WebApiEx1Name": "[concat('WebApiEx1', uniqueString(resourceGroup().id))]",
+    "WebAppEx1Name": "[concat('WebAppEx1', uniqueString(resourceGroup().id))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-04-08",
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "kind": "GlobalDocumentDB",
+      "name": "[parameters('databaseAccountName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "name": "[parameters('databaseAccountName')]",
+        "databaseAccountOfferType": "[variables('offerType')]",
+        "capabilities": [
+          {
+            "name": "EnableCassandra"
+          }
+        ],
+
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "[parameters('consistencyLevel')]",
+          "maxStalenessPrefix": "[parameters('maxStalenessPrefix')]",
+          "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]"
+        }
+      },
+      "tags": {
+        "defaultExperience":  "Cassandra"
+      }
+    },
+    {
+      "name": "[parameters('Exercise1PlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "sku": {
+        "name": "[parameters('Exercise1PlanSkuName')]"
+      },
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "Exercise1Plan"
+      },
+      "properties": {
+        "name": "[parameters('Exercise1PlanName')]",
+        "numberOfWorkers": 1
+      }
+    },
+    {
+      "name": "[variables('WebApiEx1Name')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('Exercise1PlanName'))]"
+      ],
+      "tags": {
+        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('Exercise1PlanName')))]": "Resource",
+        "displayName": "WebApiEx1"
+      },
+      "properties": {
+        "name": "[variables('WebApiEx1Name')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('Exercise1PlanName'))]"
+      },
+      "resources": [
+        {
+          "name": "MSDeploy",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('WebApiEx1Name'))]"
+          ],
+          "tags": {
+            "displayName": "WebapiEx1Deploy"
+          },
+          "properties": {
+            "packageUri": "[concat(parameters('_artifactsLocation'), '/', parameters('WebapiEx1DeployPackageFolder'), '/', parameters('WebapiEx1DeployPackageFileName'), parameters('_artifactsLocationSasToken'))]",
+            "dbType": "None",
+            "connectionString": "",
+            "setParameters": {
+              "IIS Web Application Name": "[variables('WebApiEx1Name')]"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "[variables('WebAppEx1Name')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('Exercise1PlanName'))]"
+      ],
+      "tags": {
+        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('Exercise1PlanName')))]": "Resource",
+        "displayName": "WebAppEx1"
+      },
+      "properties": {
+        "name": "[variables('WebAppEx1Name')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('Exercise1PlanName'))]"
+      },
+      "resources": [
+        {
+          "name": "MSDeploy",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('WebAppEx1Name'))]"
+          ],
+          "tags": {
+            "displayName": "WebAppEx1Deploy"
+          },
+          "properties": {
+            "packageUri": "[concat(parameters('_artifactsLocation'), '/', parameters('WebAppEx1DeployPackageFolder'), '/', parameters('WebAppEx1DeployPackageFileName'), parameters('_artifactsLocationSasToken'))]",
+            "dbType": "None",
+            "connectionString": "",
+            "setParameters": {
+              "IIS Web Application Name": "[variables('WebAppEx1Name')]"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
