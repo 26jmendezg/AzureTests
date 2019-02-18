@@ -25,37 +25,37 @@ namespace WebAppEx2.Services
             resourceid = configuration["Api:ResourceId"];
             authority = $"{configuration["AzureAd:Instance"]}{configuration["AzureAd:TenantId"]}";
             appId = configuration["AzureAd:ClientId"];
-            appSecret = configuration["AzureAd:ClientSecret"];
+            appSecret = configuration["WebAppEx2ClientSecret"];
 
             this.client = client;
             this.client.BaseAddress = new Uri(configuration["Api:Baseurl"]);
         }
 
-        public async Task SetToken()
+        public void SetToken()
         {
             if (!tokenSet)
             {
                 var authContext = new AuthenticationContext(authority);
                 var credential = new ClientCredential(appId, appSecret);
-                var authResult = await authContext.AcquireTokenAsync(resourceid, credential);
-                var token = authResult.AccessToken;
+                var authResult = authContext.AcquireTokenAsync(resourceid, credential);
+                var token = authResult.Result.AccessToken;
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 tokenSet = true;
             }
         }
 
-        public async Task<string[]> GetValues()
+        public string[] GetValues()
         {
-            await SetToken();
-            var response = await client.GetAsync("api/Devices");
+            SetToken();
+            var response = client.GetAsync("api/Devices").Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"{response.StatusCode}");
             }
 
-            var content = await response.Content.ReadAsStringAsync();
+            var content = response.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<string[]>(content);
+            return JsonConvert.DeserializeObject<string[]>(content.Result);
         }
     }
 }

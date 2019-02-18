@@ -20,10 +20,10 @@
     "WebAppEx2DeployPackageFileName": {
       "value": "package.zip"
     },
-    "WebAppEx2ClientSecret": {
+    "ClientSecret": {
       "reference": {
         "keyVault": {
-          "id": "subscriptions/47762cbe-dcee-45f7-bcd0-fb4c90630ccc/resourceGroups/Keys/providers/Microsoft.KeyVault/vaults/AzureTestKeys"
+          "id": "/subscriptions/47762cbe-dcee-45f7-bcd0-fb4c90630ccc/resourceGroups/Keys/providers/Microsoft.KeyVault/vaults/AzureTestKeys"
         },
         "secretName": "WebAppEx2ClientSecret"
       }

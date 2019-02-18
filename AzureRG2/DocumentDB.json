@@ -9,7 +9,7 @@
         "description": "The DocumentDB database account name."
       }
     },
-    "ClientSecretValue": {
+    "ClientSecret": {
       "type": "securestring"
     },
     "consistencyLevel": {
@@ -215,7 +215,7 @@
             "setParameters": {
               "IIS Web Application Name": "[variables('WebAppEx2Name')]"
             },
-            "ClientSecret": "[parameters('ClientSecretValue')]"
+            "ClientSecret": "[parameters('ClientSecret')]"
           }
         }
       ]
