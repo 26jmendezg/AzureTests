@@ -44,7 +44,7 @@ namespace WebAppEx2.Services
             }
         }
 
-        public async Task<List<Device>> GetValues()
+        public async Task<string[]> GetValues()
         {
             await SetToken();
             var response = await client.GetAsync("api/Devices");
@@ -54,7 +54,8 @@ namespace WebAppEx2.Services
             }
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<Device>>(content);
+
+            return JsonConvert.DeserializeObject<string[]>(content);
         }
     }
 }

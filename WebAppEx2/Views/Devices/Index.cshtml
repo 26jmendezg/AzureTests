@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Domain.Device>
+﻿@*@model IEnumerable<Domain.Device>*@
 
 @{
     ViewData["Title"] = "Index";
@@ -14,23 +14,24 @@
         <tr>
             <th>
                 @*@Html.DisplayNameFor(model => model.Id)*@
-                <label asp-for="@Model.FirstOrDefault().Id"></label>
+                @*<label asp-for="@Model.FirstOrDefault().Id"></label>*@
             </th>
             <th>
                 @*@Html.DisplayNameFor(model => model.Name)*@
-                <label asp-for="@Model.FirstOrDefault().Name"></label>
+                @*<label asp-for="@Model.FirstOrDefault().Name"></label>*@
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
+
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @*@Html.DisplayFor(modelItem => item.Id)*@
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @*@Html.DisplayFor(modelItem => item.Name)*@
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

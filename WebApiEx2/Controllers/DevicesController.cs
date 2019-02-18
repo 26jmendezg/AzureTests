@@ -18,16 +18,16 @@ namespace WebApiEx2.Controllers
 
         public DevicesController()
         {
-            client = new DocumentClient(new Uri("https://documentos1.documents.azure.com:443/"), "IfE4po27h5NRkBtM8VgtGGT4ZRZMkK6cRu0uFOaLvO7VoQzIXyIURYs6XbvZFol4l42I4R7tOpcLRUIK4xi0FA==");
+            client = new DocumentClient(new Uri("https://documents1.documents.azure.com:443/"), "YDdZO1XRWjXwXFQ3qjtt8cXy1sV3pEfcyz7fAj6iEwpvB7A25iF2F58mhqALezh5nmlzd8ZqYm6bXGHLbt9JEg==");
             var db = client.CreateDatabaseIfNotExistsAsync(new Database() { Id = DB });
             client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DB), new DocumentCollection() { Id = Collection });
         }
 
         [HttpGet]
         [Route("api/Devices")]
-        public IEnumerable<Device> Get()
+        public string[] Get()
         {
-            var devices = client.CreateDocumentQuery<Device>(UriFactory.CreateDocumentCollectionUri(DB, Collection), new FeedOptions()).ToList();
+            var devices = client.CreateDocumentQuery<string>(UriFactory.CreateDocumentCollectionUri(DB, Collection), new FeedOptions()).ToArray();
             return devices;
         }
 

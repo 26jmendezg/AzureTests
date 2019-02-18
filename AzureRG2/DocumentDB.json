@@ -9,6 +9,9 @@
         "description": "The DocumentDB database account name."
       }
     },
+    "ClientSecretValue": {
+      "type": "securestring"
+    },
     "consistencyLevel": {
       "type": "string",
       "allowedValues": [
@@ -40,13 +43,30 @@
         "description": "When consistencyLevel is set to BoundedStaleness, then this value is required, otherwise it can be ignored."
       }
     },
-    "serverFarmName": {
+    "Exercise2Name": {
       "type": "string",
-      "defaultValue": "Exercise1"
+      "minLength": 1
     },
-    "serverFarmResourceGroup": {
+    "Exercise2SkuName": {
       "type": "string",
-      "defaultValue": "AzureExercise1"
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
     },
     "_artifactsLocation": {
       "type": "string"
@@ -81,67 +101,12 @@
       "metadata": {
         "description": "Name of the webdeploy package"
       }
-    },
-    "Exercise2Name": {
-      "type": "string",
-      "minLength": 1
-    },
-    "Exercise2SkuName": {
-      "type": "string",
-      "defaultValue": "F1",
-      "allowedValues": [
-        "F1",
-        "D1",
-        "B1",
-        "B2",
-        "B3",
-        "S1",
-        "S2",
-        "S3",
-        "P1",
-        "P2",
-        "P3",
-        "P4"
-      ],
-      "metadata": {
-        "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
-      }
-    },
-    "WebApiEx2Deploy2PackageFolder": {
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "WebDeploy package location. This path is relative to the _artifactsLocation parameter"
-      }
-    },
-    "WebApiEx2Deploy2PackageFileName": {
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Name of the webdeploy package"
-      }
-    },
-    "WebAppEx2Deploy2PackageFolder": {
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "WebDeploy package location. This path is relative to the _artifactsLocation parameter"
-      }
-    },
-    "WebAppEx2Deploy2PackageFileName": {
-      "type": "string",
-      "minLength": 1,
-      "metadata": {
-        "description": "Name of the webdeploy package"
-      }
     }
   },
   "variables": {
     "offerType": "Standard",
     "WebApiEx2Name": "[concat('WebApiEx2', uniqueString(resourceGroup().id))]",
-    "WebAppEx2Name": "[concat('WebAppEx2', uniqueString(resourceGroup().id))]",
-    "WebApiEx22Name": "[concat('WebApiEx22', uniqueString(resourceGroup().id))]",
-    "WebAppEx22Name": "[concat('WebAppEx22', uniqueString(resourceGroup().id))]"
+    "WebAppEx2Name": "[concat('WebAppEx2', uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -177,7 +142,7 @@
       }
     },
     {
-      "name": "[variables('WebApiEx22Name')]",
+      "name": "[variables('WebApiEx2Name')]",
       "type": "Microsoft.Web/sites",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-08-01",
@@ -189,7 +154,7 @@
         "displayName": "WebApiEx2"
       },
       "properties": {
-        "name": "[variables('WebApiEx22Name')]",
+        "name": "[variables('WebApiEx2Name')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('Exercise2Name'))]"
       },
       "resources": [
@@ -199,24 +164,24 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2015-08-01",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('WebApiEx22Name'))]"
+            "[resourceId('Microsoft.Web/sites', variables('WebApiEx2Name'))]"
           ],
           "tags": {
             "displayName": "WebApiEx2Deploy"
           },
           "properties": {
-            "packageUri": "[concat(parameters('_artifactsLocation'), '/', parameters('WebApiEx2Deploy2PackageFolder'), '/', parameters('WebApiEx2Deploy2PackageFileName'), parameters('_artifactsLocationSasToken'))]",
+            "packageUri": "[concat(parameters('_artifactsLocation'), '/', parameters('WebApiEx2DeployPackageFolder'), '/', parameters('WebApiEx2DeployPackageFileName'), parameters('_artifactsLocationSasToken'))]",
             "dbType": "None",
             "connectionString": "",
             "setParameters": {
-              "IIS Web Application Name": "[variables('WebApiEx22Name')]"
+              "IIS Web Application Name": "[variables('WebApiEx2Name')]"
             }
           }
         }
       ]
     },
     {
-      "name": "[variables('WebAppEx22Name')]",
+      "name": "[variables('WebAppEx2Name')]",
       "type": "Microsoft.Web/sites",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-08-01",
@@ -228,7 +193,7 @@
         "displayName": "WebAppEx2"
       },
       "properties": {
-        "name": "[variables('WebAppEx22Name')]",
+        "name": "[variables('WebAppEx2Name')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('Exercise2Name'))]"
       },
       "resources": [
@@ -238,18 +203,19 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2015-08-01",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('WebAppEx22Name'))]"
+            "[resourceId('Microsoft.Web/sites', variables('WebAppEx2Name'))]"
           ],
           "tags": {
             "displayName": "WebAppEx2Deploy"
           },
           "properties": {
-            "packageUri": "[concat(parameters('_artifactsLocation'), '/', parameters('WebAppEx2Deploy2PackageFolder'), '/', parameters('WebAppEx2Deploy2PackageFileName'), parameters('_artifactsLocationSasToken'))]",
+            "packageUri": "[concat(parameters('_artifactsLocation'), '/', parameters('WebAppEx2DeployPackageFolder'), '/', parameters('WebAppEx2DeployPackageFileName'), parameters('_artifactsLocationSasToken'))]",
             "dbType": "None",
             "connectionString": "",
             "setParameters": {
-              "IIS Web Application Name": "[variables('WebAppEx22Name')]"
-            }
+              "IIS Web Application Name": "[variables('WebAppEx2Name')]"
+            },
+            "ClientSecret": "[parameters('ClientSecretValue')]"
           }
         }
       ]
