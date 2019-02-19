@@ -7,6 +7,6 @@ namespace Domain
         public string Id { get; set; }
         public string DeviceId { get; set; }
         public DateTime ReadingTime { get; set; }
-        public string Value { get; set; }
+        public int Value { get; set; }
     }
 }
