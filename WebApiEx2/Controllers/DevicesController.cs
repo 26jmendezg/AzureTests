@@ -25,9 +25,9 @@ namespace WebApiEx2.Controllers
 
         [HttpGet]
         [Route("api/Devices")]
-        public string[] Get()
+        public ICollection<Device> Get()
         {
-            var devices = client.CreateDocumentQuery<string>(UriFactory.CreateDocumentCollectionUri(DB, Collection), new FeedOptions()).ToArray();
+            Device[] devices = client.CreateDocumentQuery<Device>(UriFactory.CreateDocumentCollectionUri(DB, Collection), new FeedOptions()).ToArray();
             return devices;
         }
 
@@ -35,13 +35,13 @@ namespace WebApiEx2.Controllers
         [Route("api/Devices/{id}")]
         public Device GetDevice(string id)
         {
-            var device = client.CreateDocumentQuery<Device>(UriFactory.CreateDocumentCollectionUri(DB, Collection), new FeedOptions()).Where(d => d.Id.Equals(id)).FirstOrDefault();
-            return device;
+            List<Device> device = client.CreateDocumentQuery<Device>(UriFactory.CreateDocumentCollectionUri(DB, Collection), new FeedOptions()).Where(d => d.id.Equals(id)).ToList();
+            return device.FirstOrDefault();
         }
 
         [HttpPost]
         [Route("api/CreateDevice")]
-        public IActionResult CreateDevice(Device objDevice)
+        public IActionResult CreateDevice([FromBody]Device objDevice)
         {
             client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(DB, Collection), objDevice);
             return Ok();

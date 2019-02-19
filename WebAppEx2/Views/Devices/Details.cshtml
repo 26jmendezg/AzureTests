@@ -1,0 +1,41 @@
+﻿@model Domain.Device
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Device</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Threshold.High)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Threshold.High)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Threshold.Low)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Threshold.Low)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

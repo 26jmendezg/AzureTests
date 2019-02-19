@@ -44,7 +44,7 @@ namespace WebAppEx2.Services
             }
         }
 
-        public string[] GetValues()
+        public ICollection<Device> GetValues()
         {
             SetToken();
             var response = client.GetAsync("api/Devices").Result;
@@ -55,7 +55,31 @@ namespace WebAppEx2.Services
 
             var content = response.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<string[]>(content.Result);
+            return JsonConvert.DeserializeObject<List<Device>>(content.Result);
+        }
+
+        public void CreateDevice(Device objDevice)
+        {
+            SetToken();
+            var response = client.PostAsJsonAsync("api/CreateDevice", objDevice).Result;
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"{response.StatusCode}");
+            }
+        }
+
+        public Device GetDetail(string id)
+        {
+            SetToken();
+            var response = client.GetAsync($"api/Devices/{id}").Result;
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"{response.StatusCode}");
+            }
+
+            var content = response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<Device>(content.Result);
         }
     }
 }

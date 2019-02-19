@@ -12,26 +12,27 @@ namespace WebAppEx2
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-           WebHost.CreateDefaultBuilder(args)
-               .ConfigureAppConfiguration((ctx, builder) =>
-               {
-                   var keyVaultEndpoint = GetKeyVaultEndpoint();
-                   if (!string.IsNullOrEmpty(keyVaultEndpoint))
-                   {
-                       var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                       var keyVaultClient = new KeyVaultClient(
-                           new KeyVaultClient.AuthenticationCallback(
-                               azureServiceTokenProvider.KeyVaultTokenCallback));
-                       builder.AddAzureKeyVault(
-                           keyVaultEndpoint, keyVaultClient, new DefaultKeyVaultSecretManager());
-                   }
-               }
-            ).UseStartup<Startup>()
-             .Build();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                if (context.HostingEnvironment.IsProduction())
+                {
+                    var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                    var keyVaultClient = new KeyVaultClient(
+                        new KeyVaultClient.AuthenticationCallback(
+                            azureServiceTokenProvider.KeyVaultTokenCallback));
+
+                    config.AddAzureKeyVault(
+                        GetKeyVaultEndpoint(),
+                        keyVaultClient,
+                        new DefaultKeyVaultSecretManager());
+                }
+            })
+            .UseStartup<Startup>();
 
         private static string GetKeyVaultEndpoint() => "https://azuretestkeys.vault.azure.net/";
     }
