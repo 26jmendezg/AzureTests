@@ -1,0 +1,141 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "stage47762cbedcee45f7bcdType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
+    },
+    "Exercise3Name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Exercise3SkuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring"
+    },
+    "AddReadingsDeployPackageFolder": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "WebDeploy package location. This path is relative to the _artifactsLocation parameter"
+      }
+    },
+    "AddReadingsDeployPackageFileName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the webdeploy package"
+      }
+    }
+    
+  },
+  "variables": {
+    "stage47762cbedcee45f7bcdName": "[concat('stage47762cbedcee45f7bcd', uniqueString(resourceGroup().id))]",
+    "AddReadingsName": "[concat('AddReadings', uniqueString(resourceGroup().id))]"
+    
+  },
+  "resources": [
+    {
+      "name": "[variables('stage47762cbedcee45f7bcdName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-01-01",
+      "sku": {
+        "name": "[parameters('stage47762cbedcee45f7bcdType')]"
+      },
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "stage47762cbedcee45f7bcd"
+      },
+      "kind": "Storage"
+    },
+    {
+      "name": "[parameters('Exercise3Name')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "sku": {
+        "name": "[parameters('Exercise3SkuName')]"
+      },
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "Exercise3"
+      },
+      "properties": {
+        "name": "[parameters('Exercise3Name')]",
+        "numberOfWorkers": 1
+      }
+    },
+    {
+      "name": "[variables('AddReadingsName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('Exercise3Name'))]"
+      ],
+      "tags": {
+        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('Exercise3Name')))]": "Resource",
+        "displayName": "AddReadings"
+      },
+      "properties": {
+        "name": "[variables('AddReadingsName')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('Exercise3Name'))]"
+      },
+      "resources": [
+        {
+          "name": "MSDeploy",
+          "type": "extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('AddReadingsName'))]"
+          ],
+          "tags": {
+            "displayName": "AddReadingsDeploy"
+          },
+          "properties": {
+            "packageUri": "[concat(parameters('_artifactsLocation'), '/', parameters('AddReadingsDeployPackageFolder'), '/', parameters('AddReadingsDeployPackageFileName'), parameters('_artifactsLocationSasToken'))]",
+            "dbType": "None",
+            "connectionString": "",
+            "setParameters": {
+              "IIS Web Application Name": "[variables('AddReadingsName')]"
+            }
+          }
+        }
+      ]
+    }
+    
+  ]
+}

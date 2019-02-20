@@ -6,6 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.2.2" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
@@ -19,4 +20,11 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
+  <Import Project="$(ProjectDir)obj\AzureFunction1.csproj.nuget.g.targets" />
+  <ItemGroup>
+    <ProjectFiles Include="$(OutDir)\**\*.*" />
+  </ItemGroup>
+  <Target Name="Package">
+    <Zip Files="@(ProjectFiles)" WorkingDirectory="$(OutDir)" ZipFileName="$(PackageLocation)" />
+  </Target>  
 </Project>

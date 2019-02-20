@@ -25,7 +25,7 @@ namespace WebAppEx2.Controllers
         public IActionResult Create()
         {
             
-            return View(new Device() { id = Guid.NewGuid().ToString() });
+            return View(new Device() { Id = Guid.NewGuid().ToString() });
         }
 
         [HttpPost]

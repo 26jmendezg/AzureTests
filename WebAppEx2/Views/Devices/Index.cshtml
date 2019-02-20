@@ -13,8 +13,8 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.id)
-                <label asp-for="@Model.FirstOrDefault().id"></label>
+                @Html.DisplayNameFor(model => model.Id)
+                <label asp-for="@Model.FirstOrDefault().Id"></label>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
@@ -28,15 +28,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.id)
+                @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @*@Html.ActionLink("Edit", "Edit", new { id=item.Id }) |*@
-                @Html.ActionLink("Details", "Details", new { id=item.id }) 
-                @*|@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+                @Html.ActionLink("Details", "Details", new { id=item.Id }) 
             </td>
         </tr>
 }

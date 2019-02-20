@@ -1,16 +1,17 @@
+using Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.IO;
-using System.Threading.Tasks;
-using Domain;
-using Microsoft.Azure.Documents.Client;
 using System;
-using Microsoft.Azure.Documents;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AzureFunction1
 {
@@ -22,16 +23,25 @@ namespace AzureFunction1
             const string DB = "Exercise2";
             const string Collection = "Devices";
 
-            DocumentClient client = new DocumentClient(new Uri("https://documents1.documents.azure.com:443/"), "YDdZO1XRWjXwXFQ3qjtt8cXy1sV3pEfcyz7fAj6iEwpvB7A25iF2F58mhqALezh5nmlzd8ZqYm6bXGHLbt9JEg==");
+            DocumentClient client = new DocumentClient(new Uri(GetVariable("CosmosDBUri")), GetVariable("CosmosDBAuthKey"));
+
             var db = client.CreateDatabaseIfNotExistsAsync(new Database() { Id = DB });
             await client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DB), new DocumentCollection() { Id = Collection });
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             Reading data = JsonConvert.DeserializeObject<Reading>(requestBody);
+            data.Id = Guid.NewGuid().ToString();
 
-            Device device = client.CreateDocumentQuery<Device>(UriFactory.CreateDocumentCollectionUri(DB, Collection), new FeedOptions()).Where(d => d.id.Equals(data.DeviceId)).FirstOrDefault();
+            Device device = client.CreateDocumentQuery<Device>(UriFactory.CreateDocumentCollectionUri(DB, Collection), new FeedOptions()).Where(d => d.Id.Equals(data.DeviceId)).ToList().FirstOrDefault();
 
-            device.Readings.Append(data);
+            if (device.Readings == null)
+            {
+                device.Readings = new List<Reading>();
+            }
+
+            device.Readings.Add(data);
+
+            await client.UpsertDocumentAsync(UriFactory.CreateDocumentCollectionUri(DB, Collection), device);
 
             if (data.Value < device.Threshold.Low || data.Value > device.Threshold.High)
             {
@@ -39,6 +49,11 @@ namespace AzureFunction1
             }
 
             return data != null ? (ActionResult)new OkObjectResult($"Hello") : new BadRequestObjectResult("Please pass a Reading object on the request body");
+        }
+
+        private static string GetVariable(string name)
+        {
+            return Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
         }
     }
 }

@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exercise03", "Exercise03", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureFunction1", "AzureFunction1\AzureFunction1.csproj", "{EB9904B2-AD23-494E-8C7A-9C67E1602128}"
 EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "AzureRG3", "AzureRG3\AzureRG3.deployproj", "{FA215F70-BE59-4B5F-9942-04F6EB90F6F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{EB9904B2-AD23-494E-8C7A-9C67E1602128}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB9904B2-AD23-494E-8C7A-9C67E1602128}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB9904B2-AD23-494E-8C7A-9C67E1602128}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA215F70-BE59-4B5F-9942-04F6EB90F6F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA215F70-BE59-4B5F-9942-04F6EB90F6F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA215F70-BE59-4B5F-9942-04F6EB90F6F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA215F70-BE59-4B5F-9942-04F6EB90F6F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +98,7 @@ Global
 		{2060882B-D70C-43A3-A185-CDE54DFF98F7} = {51FD898F-DB00-40DD-B346-1D35E9848731}
 		{0F18CEA3-AB2C-4108-9C12-CF8258431770} = {51FD898F-DB00-40DD-B346-1D35E9848731}
 		{EB9904B2-AD23-494E-8C7A-9C67E1602128} = {E4632F10-2C95-456B-A261-D29842D5E979}
+		{FA215F70-BE59-4B5F-9942-04F6EB90F6F8} = {E4632F10-2C95-456B-A261-D29842D5E979}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {516B6B37-8FB1-4A5F-B4CC-61ED291D4E2F}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hostingPlanName": {
+      "value": "Exercise3"
+    },
+    "AddReadingPackageFolder": {
+      "value": "AzureFunction1"
+    },
+    "AddReadingPackageFileName": {
+      "value": "package.zip"
+    },
+    "Exercise3Name": {
+      "value": "Exercise3"
+    },
+    "AddReadingsDeployPackageFolder": {
+      "value": "AzureFunction1"
+    },
+    "AddReadingsDeployPackageFileName": {
+      "value": "package.zip"
+    }
+  }
+}

@@ -35,7 +35,7 @@ namespace WebApiEx2.Controllers
         [Route("api/Devices/{id}")]
         public Device GetDevice(string id)
         {
-            List<Device> device = client.CreateDocumentQuery<Device>(UriFactory.CreateDocumentCollectionUri(DB, Collection), new FeedOptions()).Where(d => d.id.Equals(id)).ToList();
+            List<Device> device = client.CreateDocumentQuery<Device>(UriFactory.CreateDocumentCollectionUri(DB, Collection), new FeedOptions()).Where(d => d.Id.Equals(id)).ToList();
             return device.FirstOrDefault();
         }
 
