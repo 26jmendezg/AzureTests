@@ -15,7 +15,7 @@
       "value": "Exercise3"
     },
     "AddReadingsDeployPackageFolder": {
-      "value": "AzureFunction1"
+      "value": "AddReadings"
     },
     "AddReadingsDeployPackageFileName": {
       "value": "package.zip"

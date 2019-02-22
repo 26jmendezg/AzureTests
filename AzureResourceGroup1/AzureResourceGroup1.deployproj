@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>fa215f70-be59-4b5f-9942-04f6eb90f6f8</ProjectGuid>
+    <ProjectGuid>c10b3cd0-b4b5-4f34-a03f-35ac24e0e07b</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup>
     <PrepareForBuildDependsOn>
@@ -23,17 +23,17 @@
   <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
   <!-- vertag<:>end -->
   <ItemGroup>
+    <Content Include="azuredeploy.json" />
+    <Content Include="azuredeploy.parameters.json" />
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
-    <Content Include="WebSite.json" />
-    <Content Include="WebSite.parameters.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AddReadings\AddReadings.csproj">
       <Targets>Build;Package</Targets>
-      <AdditionalProperties>PackageLocation=..\AzureRG3\$(ProjectReferencesOutputPath)\AddReadings\package.zip</AdditionalProperties>
+      <AdditionalProperties>PackageLocation=..\AzureResourceGroup1\$(ProjectReferencesOutputPath)\AddReadings\package.zip</AdditionalProperties>
       <IncludeFilePath>$(ProjectReferencesOutputPath)\AddReadings\package.zip</IncludeFilePath>
     </ProjectReference>
   </ItemGroup>
